@@ -1,0 +1,51 @@
+---
+title: "Stock Analysis Project"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+## Set-Up 
+
+```{r}
+# If packages have not downloaded before
+#install.packages("tidyverse")
+#install.packages("tidyquant")
+#install.packages("ggthemes")
+library(tidyverse)
+library(tidyquant)
+library(ggthemes)
+```
+
+## Getting Prices
+
+```{r}
+bros <- tq_get("BROS", get = "stock.prices")
+sbux <- tq_get("SBUX", get = "stock.prices", from = "2021-09-15")
+```
+
+
+## Graphing 
+
+```{r}
+bros <- bros |>
+  mutate(company = "Dutch Bros")
+
+sbux <- sbux |>
+  mutate(company = "Starbucks")
+
+prices <- bind_rows(bros, sbux)
+
+ggplot(prices,
+       mapping = aes(x = date, y = close, color = company)) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Starbucks v. Dutch Bros Price",
+    x = "Date",
+    y = "Price $"
+  ) + theme_economist_white()
+```
